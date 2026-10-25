@@ -1,0 +1,8 @@
+out/
+build/
+.vs/
+CMakeSettings.json
+*.exe
+*.bin
+*.elf
+*.zip
