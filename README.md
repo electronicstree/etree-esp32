@@ -11,7 +11,7 @@ file) in the QEMU ESP32 emulator. It keeps the emulated chip in exact time step 
 circuit simulator.
 
 The engine is the open-source half of the ESP32 model for **Proteus 8** by
-[electronicstree.com](https://www.electronicstree.com). The other half, the Proteus model `ESP32.DLL`,
+[electronicstree.com](https://www.electronicstree.com). The other half, the Proteus model `ESP32DevKitCv4.DLL`,
 is free to use but closed source. The two halves talk only through a small MIT-licensed shared-memory
 link (`esp32link.h`).
 
@@ -25,7 +25,7 @@ link (`esp32link.h`).
 
 ```
         ┌───────────────────────────┐            ┌───────────────────────────┐
-        │  ESP32.DLL (32-bit)       │            │  etree-esp32.exe (64-bit) │
+        │  ESP32DevKitCv4.DLL       │            │  etree-esp32.exe (64-bit) │
         │  model inside Proteus     │            │  QEMU + your firmware     │
         └─────────────┬─────────────┘            └─────────────┬─────────────┘
                       │                                        │
@@ -175,7 +175,7 @@ etree-esp32\
 ```
 
 Proteus users: copy the whole `etree-esp32` folder into `...\Proteus 8 Professional\DATA\MODELS\`.
-The ESP32 Proteus model itself (`ESP32.DLL`, the part library and the user guide) is available at
+The ESP32 Proteus model itself (`ESP32DevKitCv4.DLL`, the part library and the user guide) is available at
 [electronicstree.com](https://www.electronicstree.com).
 
 ## Credits

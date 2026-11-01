@@ -61,7 +61,7 @@ enum
                               //   op: 0 START+read (data = 7-bit addr), 1 START+write, 3 STOP,
                               //   4 NACK, 5 write byte, 6 read byte. The engine WAITS for the answer
                               //   (busResp): ACK 0 / NACK 1, or the byte read.
-    E32_EV_SPI      = 8,      // a = bus 0 HSPI / 1 VSPI, b = op | data << 8, c = mode
+    E32_EV_SPI      = 8,      // a = bus 0 HSPI / 1 VSPI, b = op | data << 8, c = mode | SPI clock in kHz << 8 (0 = unknown)
                               //   (bit0 CPOL, bit1 CPHA, bit2 LSB first), reserved = request seq.
                               //   op 0: transfer byte (engine waits, busResp = MISO byte)
                               //   op 1: CS change, data = cs | level << 2 (no answer)

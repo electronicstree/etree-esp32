@@ -3206,6 +3206,8 @@ static void spiLog(const char* item)
     if (count == 3000) { elog("SPI out/in:%s", line); n = 0; }
 }
 
+static uint32_t spiKhz(int bus);
+
 static uint8_t cb_spi_event(const uint8_t bus, const uint16_t event)
 {
     int op = event & 0xFF;
@@ -3216,7 +3218,7 @@ static uint8_t cb_spi_event(const uint8_t bus, const uint16_t event)
         toModel(E32_EV_SPI, bus, 1u | (data << 8), spiMode(bus));   // CS: no answer needed
         return 0;
     }
-    uint8_t in = (uint8_t)busCall(E32_EV_SPI, bus, 0u | ((data & 0xFF) << 8), spiMode(bus));
+    uint8_t in = (uint8_t)busCall(E32_EV_SPI, bus, 0u | ((data & 0xFF) << 8), spiMode(bus) | (spiKhz(bus) << 8));
     char item[16];
     sprintf_s(item, " %02X/%02X", (unsigned)(data & 0xFF), in);
     spiLog(item);
@@ -3254,6 +3256,17 @@ static void*                     g_spiOrigOpaque[2];
 static QemuMemoryRegionOps       g_spisOps;
 static QemuMemoryRegionStorage   g_spisMr[4];
 static void (*q_phys_rw)(uint64_t addr, void* buf, uint64_t len, bool isWrite) = nullptr;   // cpu_physical_memory_rw
+
+// The SPI clock the firmware set, from our copy of SPI_CLOCK (0x18): bit 31 = APB clock, else
+// APB / ((pre + 1) * (n + 1)) with pre = bits 18-30, n = bits 12-17. 0 = not set yet.
+static uint32_t spiKhz(int bus)
+{
+    if (bus < 0 || bus > 1) return 0;
+    const uint32_t c = g_spis[bus].r[0x18 / 4];
+    if (c == 0) return 0;
+    if (c >> 31) return 80000;
+    return 80000u / (((c >> 18) & 0x1FFF) + 1) / (((c >> 12) & 0x3F) + 1);
+}
 
 static uint8_t* spiState(int h) { return (uint8_t*)g_soc + OFS_SPI0 + (h + 2) * SPI_STRIDE; }
 static bool spisActive(int h) { return (g_spis[h].r[0x38 / 4] >> 30) & 1; }
